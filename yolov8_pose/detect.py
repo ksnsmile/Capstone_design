@@ -1,6 +1,7 @@
 import cv2
 from ultralytics import YOLO
 import time
+from calculating import matrix,tool_path,write_csv
 
 # YOLO 모델 로드
 model = YOLO('best_pose.pt')
@@ -25,6 +26,8 @@ while True:
     # keypoints 객체 가져오기
     keypoints = first_result.keypoints
 
+    flag=True
+
     if keypoints is not None:
         # keypoints 배열로 변환 (각 keypoint에 대한 x, y 좌표와 confidence)
         keypoints_array = keypoints.data.cpu().numpy()  # tensor에서 numpy 배열로 변환
@@ -42,6 +45,15 @@ while True:
             # 좌표 출력
             print(f"팔꿈치 좌표: ({int(elbow[0])}, {int(elbow[1])})")
             print(f"손목 좌표: ({int(wrist[0])}, {int(wrist[1])})")
+
+            if flag:
+                path=tool_path(elbow,wrist)
+
+                robot_point_transformed=matrix(point)
+
+                write_csv(robot_point_transformed)
+
+                flag=False
 
             # YOLO가 반환한 이미지에 선 그리기 (녹색 선)
             cv2.line(img, (int(elbow[0]), int(elbow[1])), (int(wrist[0]), int(wrist[1])), (0, 255, 0), 2)
