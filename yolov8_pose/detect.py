@@ -1,13 +1,15 @@
 import cv2
 from ultralytics import YOLO
 import time
-from calculating import tool_path,write_csv
+from calculating import calculate_matrix,calculate_tool_path,write_csv
 
 # YOLO 모델 로드
 model = YOLO('best_pose.pt')
 
 # OpenCV를 사용하여 카메라 열기
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+
+flag=True
 
 while True:
     ret, frame = cap.read()  # 카메라에서 프레임 읽기
@@ -26,7 +28,6 @@ while True:
     # keypoints 객체 가져오기
     keypoints = first_result.keypoints
 
-    flag=True
 
     if keypoints is not None:
         # keypoints 배열로 변환 (각 keypoint에 대한 x, y 좌표와 confidence)
@@ -44,9 +45,9 @@ while True:
             print(f"손목 좌표: ({int(wrist[0])}, {int(wrist[1])})")
 
             if flag:
-                transformed_path=tool_path(elbow,wrist)
+                transformed_path=calculate_tool_path(elbow,wrist)
 
-                write_csv(transformed_path)
+                write_csv(transformed_path,elbow,wrist)
 
                 flag=False
 
