@@ -40,9 +40,6 @@ while True:
             elbow = keypoints_array[0][1][:2]  # 왼쪽 팔꿈치
             wrist = keypoints_array[0][0][:2]  # 왼쪽 손목
 
-            # 좌표 출력
-            print(f"팔꿈치 좌표: ({int(elbow[0])}, {int(elbow[1])})")
-            print(f"손목 좌표: ({int(wrist[0])}, {int(wrist[1])})")
 
             if flag:
                 transformed_path=calculate_tool_path(elbow,wrist)
@@ -60,9 +57,6 @@ while True:
     # 'q' 키를 누르면 루프 종료
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-
-    # 처리 속도를 조절하기 위한 시간 지연
-    time.sleep(0.8)
 
 # 카메라 해제 및 창 닫기
 cap.release()
