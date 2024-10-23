@@ -2,7 +2,6 @@ import cv2
 from ultralytics import YOLO
 import time
 from calculating import tool_path,write_csv
-import csv
 
 # YOLO 모델 로드
 model = YOLO('best_pose.pt')
@@ -17,7 +16,7 @@ while True:
         break
 
     # YOLO 모델 실행 (show=False로 설정하여 모델이 자동으로 창을 띄우지 않게 함)
-    results = model(frame, show=False, conf=0.3, save=True)
+    results = model(frame, show=False, conf=0.1, save=True)
 
     # YOLO 모델이 반환한 이미지 가져오기
     img = results[0].plot()  # 모델의 결과 이미지를 가져옴

@@ -1,5 +1,5 @@
 import numpy as np
-import cv2
+import csv
 
 class Node:
     def __init__(self, x, y, z):
@@ -82,8 +82,7 @@ def write_csv(transformed_path):
         elif k==len(transformed_path)-1:
 
             csv_writer.writerow([k, robotPt.x, robotPt.y, 400, 180, 0, 0, '13 - Lefty | Above | NonFlip | J6Double | J4Single | J1Single'])
-            csv_writer.writerow([k, robotPt.x, robotPt.y, 180, 180, 0, 0, '13 - Lefty | Above | NonFlip | J6Double | J4Single | J1Single'])
-
+            
         else:
             csv_writer.writerow([k, robotPt.x, robotPt.y, 180, 180, 0, 0, '13 - Lefty | Above | NonFlip | J6Double | J4Single | J1Single'])
     
