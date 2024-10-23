@@ -1,4 +1,5 @@
 import numpy as np
+import cv2
 
 class Node:
     def __init__(self, x, y, z):
@@ -25,39 +26,43 @@ def matrix(pixel_point):
     # 전체 변환 행렬 계산 (스케일링 → 회전 → 이동)
     transformation_matrix = translation_matrix @ rotation_matrix @ scaling_matrix
 
-    robot_point_transformed = transformation_matrix @ pixel_point
+    # pixel_point를 변환 (node 대신 pixel_point 사용)
+    pixel_point_array = np.array([pixel_point.x, pixel_point.y, pixel_point.z])
+    robot_point_transformed = transformation_matrix @ pixel_point_array
 
-
-    return robot_point_transformed
+    return Node(robot_point_transformed[0], robot_point_transformed[1], robot_point_transformed[2])
 
 def tool_path(elbow,wrist):
 
     path = []
 
-    current_position = np.array([(wrist.x+elbow.x)/2, (wrist.y+elbow.y)/2, wrist.z], dtype=float)
+    current_position = np.array([(wrist[0]+elbow[0])/2, (wrist[1]+elbow[1])/2, 1], dtype=float)
     path.append(Node(current_position[0], current_position[1], current_position[2]))
     path.append(Node(current_position[0], current_position[1], current_position[2]))
 
     for i in range(3):
 
-        current_position[0]=wrist.x
-        current_position[1]=wrist.y
+        current_position[0]=wrist[0]
+        current_position[1]=wrist[1]
         path.append(Node(current_position[0], current_position[1], current_position[2]))
 
-        current_position[0]=elbow.x
-        current_position[1]=elbow.y
+        current_position[0]=elbow[0]
+        current_position[1]=elbow[1]
         path.append(Node(current_position[0], current_position[1], current_position[2]))
 
-    current_position = np.array([(wrist.x+elbow.x)/2, (wrist.y+elbow.y)/2, wrist.z], dtype=float)
+    current_position = np.array([(wrist[0]+elbow[0])/2, (wrist[1]+elbow[1])/2, 1], dtype=float)
     path.append(Node(current_position[0], current_position[1], current_position[2]))
     path.append(Node(current_position[0], current_position[1], current_position[2]))
 
 
-    return path
+    # 픽셀 좌표계를 로봇 좌표계로 변환
+    transformed_path = [matrix(node) for node in path]
 
-def write_csv(robot_path):
+    return transformed_path
+
+def write_csv(transformed_path):
     # CSV 파일을 쓰기 모드로 열기
-    f = open('C:/Users/ksn71/OneDrive/바탕 화면/git/capstone_git/yolov8_pose/Var_P.csv', 'w', newline='')  
+    f = open('C:/Users/ksn71/OneDrive/바탕 화면/git/Capstone_design/yolov8_pose/Var_P.csv', 'w', newline='')  
     csv_writer = csv.writer(f)  # CSV 작성기 객체 생성
 
     # 메타데이터 작성
@@ -68,17 +73,19 @@ def write_csv(robot_path):
     csv_writer.writerow(['[No.]', '[X]', '[Y]', '[Z]', '[RX]', '[RY]', '[RZ]', '[FIG]', '[using]', '[macro name]'])
 
     # robot_path의 각 점에 대해 CSV 파일에 작성
-    for k, robotPt in enumerate(robot_path):
+    for k, robotPt in enumerate(transformed_path):
         # robotPt는 Node 객체이므로 속성을 사용하여 값을 추출
 
         if k==0:
             csv_writer.writerow([k, robotPt.x, robotPt.y, 400, 180, 0, 0, '13 - Lefty | Above | NonFlip | J6Double | J4Single | J1Single'])
 
-        elif k==len(robot_path)-1:
+        elif k==len(transformed_path)-1:
 
             csv_writer.writerow([k, robotPt.x, robotPt.y, 400, 180, 0, 0, '13 - Lefty | Above | NonFlip | J6Double | J4Single | J1Single'])
-
             csv_writer.writerow([k, robotPt.x, robotPt.y, 180, 180, 0, 0, '13 - Lefty | Above | NonFlip | J6Double | J4Single | J1Single'])
 
+        else:
+            csv_writer.writerow([k, robotPt.x, robotPt.y, 180, 180, 0, 0, '13 - Lefty | Above | NonFlip | J6Double | J4Single | J1Single'])
+    
     # 파일 닫기
     f.close()

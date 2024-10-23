@@ -1,7 +1,8 @@
 import cv2
 from ultralytics import YOLO
 import time
-from calculating import matrix,tool_path,write_csv
+from calculating import tool_path,write_csv
+import csv
 
 # YOLO 모델 로드
 model = YOLO('best_pose.pt')
@@ -31,13 +32,10 @@ while True:
     if keypoints is not None:
         # keypoints 배열로 변환 (각 keypoint에 대한 x, y 좌표와 confidence)
         keypoints_array = keypoints.data.cpu().numpy()  # tensor에서 numpy 배열로 변환
-        print(keypoints_array)
+        
         # keypoints 정보 출력
         for i in range(keypoints_array.shape[1]):  # 각 keypoint에 대해 반복
-            x, y, conf = keypoints_array[0][i]  # 첫 번째 탐지의 keypoint 정보
-            if conf > 0.5:  # confidence 값이 0.5 이상일 때
-                print(f"Keypoint {i}: x={x}, y={y}, confidence={conf}")
-
+ 
             # 왼쪽 팔꿈치(관절 6)와 왼쪽 손목(관절 7) 좌표 사용
             elbow = keypoints_array[0][1][:2]  # 왼쪽 팔꿈치
             wrist = keypoints_array[0][0][:2]  # 왼쪽 손목
@@ -47,11 +45,9 @@ while True:
             print(f"손목 좌표: ({int(wrist[0])}, {int(wrist[1])})")
 
             if flag:
-                path=tool_path(elbow,wrist)
+                transformed_path=tool_path(elbow,wrist)
 
-                robot_point_transformed=matrix(point)
-
-                write_csv(robot_point_transformed)
+                write_csv(transformed_path)
 
                 flag=False
 
