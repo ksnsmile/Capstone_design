@@ -85,8 +85,6 @@ def write_csv(transformed_path, elbow, wrist):
     f = open('C:/Users/ksn71/OneDrive/바탕 화면/git/Capstone_design/yolov8_pose/Var_P.csv', 'w', newline='')  
     csv_writer = csv.writer(f)  # CSV 작성기 객체 생성
 
-    
-
     # 메타데이터 작성
     csv_writer.writerow(['===== Export Data Var P ====='])  
     csv_writer.writerow(['RobotTypeName :', 'VP-5243'])
@@ -99,7 +97,7 @@ def write_csv(transformed_path, elbow, wrist):
         # robotPt는 Node 객체이므로 속성을 사용하여 값을 추출
 
         angle = calculate_angle(elbow, wrist)
-        
+
         if k==0 or k==len(transformed_path)-1:
             csv_writer.writerow([k, robotPt.x, robotPt.y, 400, 180, 0, 0, '13 - Lefty | Above | NonFlip | J6Double | J4Single | J1Single'])
 

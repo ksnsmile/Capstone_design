@@ -18,7 +18,7 @@ while True:
         break
 
     # YOLO 모델 실행 (show=False로 설정하여 모델이 자동으로 창을 띄우지 않게 함)
-    results = model(frame, show=False, conf=0.1, save=True)
+    results = model(frame, show=False, conf=0.5, save=True)
 
     # YOLO 모델이 반환한 이미지 가져오기
     img = results[0].plot()  # 모델의 결과 이미지를 가져옴

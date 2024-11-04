@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>images/free-icon-person-standing-5557076.png</file>
+    <file>images/free-icon-carer-2515014.png</file>
+    <file>images/free-icon-bath-1706342.png</file>
+    <file>images/free-icon-patient-1430453.png</file>
+  </qresource>
+</RCC>
