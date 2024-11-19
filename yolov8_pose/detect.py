@@ -7,7 +7,7 @@ from calculating import calculate_matrix,calculate_tool_path,write_csv
 model = YOLO('best_pose.pt')
 
 # OpenCV를 사용하여 카메라 열기
-cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+cap = cv2.VideoCapture(2, cv2.CAP_DSHOW)
 
 flag=True
 
