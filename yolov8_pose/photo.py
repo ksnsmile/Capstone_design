@@ -35,7 +35,22 @@ while cap.isOpened():
         for i in target_indices:
             x, y= person_keypoints[i][:2]  # 해당 관절의 x, y 좌표와 신뢰도
             
-            cv2.circle(frame, (int(x), int(y)), radius=5, color=(0, 0, 255), thickness=-1)  # 빨간색 원
+            cv2.circle(frame, (int(x), int(y)), radius=8, color=(0, 0, 255), thickness=-1)  # 빨간색 원
+        
+        connections = [
+            (5, 7),  # 왼쪽 어깨 -> 왼쪽 팔꿈치
+            (5, 6),  # 왼쪽 어깨 -> 오른쪽 어깨 
+            (7, 9),  # 왼쪽 팔꿈치 -> 왼쪽 손목
+            (6, 8),  # 오른쪽 어깨 -> 오른쪽 팔꿈치
+            (8, 10),  # 오른쪽 팔꿈치 -> 오른쪽 손목
+            (11, 12) # 왼쪽 골반 -> 오른쪽 골반 
+        ]
+
+        for start_idx, end_idx in connections:
+            x1, y1 = person_keypoints[start_idx][:2]
+            x2, y2 = person_keypoints[end_idx][:2]
+            cv2.line(frame, (int(x1), int(y1)), (int(x2), int(y2)), color=(255, 0, 0), thickness=3)  # 파란색 선
+
 
     # 결과 화면 출력
     cv2.imshow('YOLOv8 Pose', frame)
